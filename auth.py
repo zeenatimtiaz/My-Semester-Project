@@ -20,7 +20,7 @@ def login_user(email,password)
     WHERE email = ? AND password = ?
     """, (email, password))
 
-    user = cursor.fetchone() # if the user with the same name and password found than return the username
+    user = cursor.fetchone() # if user exists fetchone() will return user details otherwise it will return None
     conn.close()
 
     return user
