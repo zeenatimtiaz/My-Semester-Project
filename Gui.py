@@ -7,10 +7,10 @@ window = Tk()
 window.title("OLX Desktop Clone")
 window.geometry("700x500")
 window.configure(bg="#f2f2f2") # background color of main window
-window.iconbitmap(r"C:\Users\M.Arsalan\Desktop\MySemesterProject\My-Semester-Project\olx.ico")
+window.iconbitmap(r"C:\Users\M.Arsalan\Desktop\MySemesterProject\olx.ico")
 
 # Logo added 
-logo=PhotoImage(file=r"C:\Users\M.Arsalan\Desktop\MySemesterProject\My-Semester-Project\olx_logo.png")
+logo=PhotoImage(file=r"C:\Users\M.Arsalan\Desktop\MySemesterProject\olx_logo.png")
 logo_label=Label(window,image=logo,bg="#f2f2f2")
 logo_label.pack(pady=10)
 
