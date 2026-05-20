@@ -8,10 +8,10 @@ window = Tk()
 window.title("OLX Desktop Clone")
 window.geometry("700x500")
 window.configure(bg="#f2f2f2") # background color of main window
-window.iconbitmap(r"C:\Users\M.Arsalan\Desktop\MySemesterProject\olx.ico")
+window.iconbitmap("olx.ico")
 
 # Logo added 
-logo=PhotoImage(file=r"C:\Users\M.Arsalan\Desktop\MySemesterProject\olx_logo.png")
+logo=PhotoImage(file="olx_logo.png")
 logo_label=Label(window,image=logo,bg="#f2f2f2")
 logo_label.pack(pady=10)
 
@@ -59,13 +59,33 @@ def open_register() :
         register_user(name,email,password)
         messagebox.showinfo("Success.!!", "User Registered Successfully")
     Button(register_window,text="Register", command=save_user).pack(pady=10)
-# register button
-register_btn=Button(window, text="Register" , width=20, bg="green" , fg="white" ,font=("Arial", 12, "bold"),command=open_register) # connect register window to main window
+# Register Button
+register_btn = Button(
+    window, text="Register", width=20,
+    bg="green", fg="white", font=("Arial", 12, "bold"),
+    activebackground="darkgreen", activeforeground="white",
+    relief="raised", bd=2,
+    highlightbackground="green",  # ← this fixes macOS color issue
+    command=open_register
+)
 register_btn.pack(pady=10)
+
 # Login Button
-Login_btn=Button(window, text="Login",width=20,bg="blue",fg="white",font=("Arial",12,"bold"))
+Login_btn = Button(
+    window, text="Login", width=20,
+    bg="blue", fg="white", font=("Arial", 12, "bold"),
+    activebackground="darkblue", activeforeground="white",
+    relief="raised", bd=2,
+    highlightbackground="blue"  # ← same fix
+)
 Login_btn.pack(pady=10)
-# view products button
-view_btn=Button(window, text="View Products",width=20,bg="orange",fg="white",font=("Arial",12,"bold"))
+
+# View Products Button
+view_btn = Button(
+    window, text="View Products", width=20,
+    bg="orange", fg="white", font=("Arial", 12, "bold"),
+    activebackground="darkorange", activeforeground="white",
+    relief="raised", bd=2,
+    highlightbackground="orange"  # ← same fix
+)
 view_btn.pack(pady=10)
-window.mainloop()
