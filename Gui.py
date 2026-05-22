@@ -59,6 +59,112 @@ title = Label(
 title.pack(pady=10)
 
 # =========================
+# DASHBOARD WINDOW
+# =========================
+
+def open_dashboard(user):
+
+    dashboard = Toplevel(window)
+
+    dashboard.title("Dashboard")
+
+    dashboard.geometry("500x400")
+
+    dashboard.configure(bg="white")
+
+    dashboard.resizable(False, False)
+
+    # =========================
+    # USER INFO
+    # =========================
+
+    user_name = user[1]
+    user_email = user[2]
+
+    # =========================
+    # WELCOME LABEL
+    # =========================
+
+    welcome_label = Label(
+        dashboard,
+        text=f"Welcome, {user_name}",
+        font=("Arial", 20, "bold"),
+        bg="white",
+        fg="darkgreen"
+    )
+
+    welcome_label.pack(pady=30)
+
+    # =========================
+    # EMAIL LABEL
+    # =========================
+
+    email_label = Label(
+        dashboard,
+        text=f"Email: {user_email}",
+        font=("Arial", 14),
+        bg="white"
+    )
+
+    email_label.pack(pady=10)
+
+    # =========================
+    # ADD PRODUCT BUTTON
+    # =========================
+
+    add_product_btn = Label(
+        dashboard,
+        text="Add Product",
+        bg="orange",
+        fg="white",
+        font=("Arial", 12, "bold"),
+        width=20,
+        height=2,
+        cursor="hand2"
+    )
+
+    add_product_btn.pack(pady=15)
+
+    # =========================
+    # VIEW PRODUCTS BUTTON
+    # =========================
+
+    view_products_btn = Label(
+        dashboard,
+        text="View Products",
+        bg="darkblue",
+        fg="white",
+        font=("Arial", 12, "bold"),
+        width=20,
+        height=2,
+        cursor="hand2"
+    )
+
+    view_products_btn.pack(pady=15)
+
+    # =========================
+    # LOGOUT BUTTON
+    # =========================
+
+    logout_btn = Label(
+        dashboard,
+        text="Logout",
+        bg="red",
+        fg="white",
+        font=("Arial", 12, "bold"),
+        width=20,
+        height=2,
+        cursor="hand2"
+    )
+
+    logout_btn.pack(pady=20)
+
+    logout_btn.bind(
+        "<Button-1>",
+        lambda e: dashboard.destroy()
+    )
+
+# =========================
 # REGISTER WINDOW
 # =========================
 
@@ -167,6 +273,8 @@ def open_register():
             "Success",
             "User Registered Successfully"
         )
+
+        register_window.destroy()
 
     # =========================
     # REGISTER BUTTON
@@ -281,10 +389,9 @@ def open_login():
 
         if user:
 
-            messagebox.showinfo(
-                "Success",
-                "Login Successful"
-            )
+            login_window.destroy()
+
+            open_dashboard(user)
 
         else:
 
@@ -319,9 +426,7 @@ def open_login():
 # MAIN WINDOW BUTTONS
 # =========================
 
-# =========================
 # REGISTER BUTTON
-# =========================
 
 register_btn = Label(
     main_frame,
@@ -341,9 +446,7 @@ register_btn.bind(
     lambda e: open_register()
 )
 
-# =========================
 # LOGIN BUTTON
-# =========================
 
 login_btn = Label(
     main_frame,
@@ -363,22 +466,20 @@ login_btn.bind(
     lambda e: open_login()
 )
 
-# =========================
 # VIEW PRODUCTS BUTTON
-# =========================
 
-view_btn = Label(
-    main_frame,
-    text="View Products",
-    bg="orange",
-    fg="white",
-    font=("Arial", 12, "bold"),
-    width=20,
-    height=2,
-    cursor="hand2"
-)
+#view_btn = Label(
+   # main_frame,
+    #text="View Products",
+    #bg="orange",
+    #fg="white",
+    #font=("Arial", 12, "bold"),
+    #width=20,
+    #height=2,
+    #cursor="hand2"
+#)
 
-view_btn.pack(pady=10)
+#view_btn.pack(pady=10)
 
 # =========================
 # RUN WINDOW
