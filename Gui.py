@@ -1,87 +1,251 @@
 from tkinter import *
-from tkinter import ttk, messagebox
-from auth import register_user, login_user
+from tkinter import messagebox
+from auth import register_user
+import os
 
-# Main Window
+# =========================
+# MAIN WINDOW
+# =========================
+
 window = Tk()
+
 window.title("OLX Desktop Clone")
 window.geometry("700x500")
-window.configure(bg="#f2f2f2")
+window.configure(bg="white")
 
-# Fix for macOS
-style = ttk.Style()
-style.theme_use("clam")
-style.configure("Green.TButton", background="green", foreground="white", font=("Arial", 12, "bold"), padding=10)
-style.configure("Blue.TButton", background="blue", foreground="white", font=("Arial", 12, "bold"), padding=10)
-style.configure("Orange.TButton", background="orange", foreground="white", font=("Arial", 12, "bold"), padding=10)
+# Prevent resizing
+window.resizable(False, False)
 
-try:
-    logo = PhotoImage(file="olx_logo.png")
-    Label(window, image=logo, bg="#f2f2f2").pack(pady=10)
-except:
-    pass
+# =========================
+# MAIN FRAME
+# =========================
 
-Label(window, text="Welcome to the OLX Clone",
-      font=("Arial", 22, "bold"), bg="#f2f2f2", fg="darkgreen").pack(pady=20)
+main_frame = Frame(window, bg="white")
+main_frame.pack(expand=True)
 
-# Register
+# =========================
+# LOGO IMAGE
+# =========================
+
+current_folder = os.path.dirname(__file__)
+
+logo_path = os.path.join(current_folder, "olx_logo.png")
+
+logo = PhotoImage(file=logo_path)
+
+# Resize image smaller
+logo = logo.subsample(3, 3)
+
+logo_label = Label(
+    main_frame,
+    image=logo,
+    bg="white"
+)
+
+logo_label.pack(pady=10)
+
+# =========================
+# TITLE
+# =========================
+
+title = Label(
+    main_frame,
+    text="Welcome to the OLX Clone",
+    font=("Arial", 18, "bold"),
+    bg="white",
+    fg="darkgreen"
+)
+
+title.pack(pady=10)
+
+# =========================
+# REGISTER WINDOW
+# =========================
+
 def open_register():
-    win = Toplevel(window)
-    win.title("Register")
-    win.geometry("400x300")
 
-    Label(win, text="Name").pack()
-    name = Entry(win, width=30)
-    name.pack(pady=5)
+    register_window = Toplevel(window)
 
-    Label(win, text="Email").pack()
-    email = Entry(win, width=30)
-    email.pack(pady=5)
+    register_window.title("Register")
 
-    Label(win, text="Password").pack()
-    password = Entry(win, show="*", width=30)
-    password.pack(pady=5)
+    register_window.geometry("400x400")
 
-    def save():
-        if name.get() == "" or email.get() == "" or password.get() == "":
-            messagebox.showerror("Error", "Fill all fields!")
+    register_window.configure(bg="white")
+
+    register_window.resizable(False, False)
+
+    # Heading
+    heading = Label(
+        register_window,
+        text="Create Your Account",
+        font=("Arial", 18, "bold"),
+        bg="white",
+        fg="darkgreen"
+    )
+
+    heading.pack(pady=15)
+
+    # =========================
+    # NAME
+    # =========================
+
+    Label(
+        register_window,
+        text="Name",
+        font=("Arial", 12, "bold"),
+        bg="white"
+    ).pack()
+
+    name_entry = Entry(
+        register_window,
+        width=30,
+        font=("Arial", 11)
+    )
+
+    name_entry.pack(pady=5)
+
+    # =========================
+    # EMAIL
+    # =========================
+
+    Label(
+        register_window,
+        text="Email",
+        font=("Arial", 12, "bold"),
+        bg="white"
+    ).pack()
+
+    email_entry = Entry(
+        register_window,
+        width=30,
+        font=("Arial", 11)
+    )
+
+    email_entry.pack(pady=5)
+
+    # =========================
+    # PASSWORD
+    # =========================
+
+    Label(
+        register_window,
+        text="Password",
+        font=("Arial", 12, "bold"),
+        bg="white"
+    ).pack()
+
+    password_entry = Entry(
+        register_window,
+        width=30,
+        font=("Arial", 11),
+        show="*"
+    )
+
+    password_entry.pack(pady=5)
+
+    # =========================
+    # SAVE USER FUNCTION
+    # =========================
+
+    def save_user():
+
+        name = name_entry.get()
+        email = email_entry.get()
+        password = password_entry.get()
+
+        # Validation
+        if name == "" or email == "" or password == "":
+            messagebox.showerror(
+                "Error",
+                "Please fill all fields"
+            )
             return
-        success = register_user(name.get(), email.get(), password.get())
-        if success:
-            messagebox.showinfo("Success", "Registered Successfully!")
-            win.destroy()
-        else:
-            messagebox.showerror("Error", "Email already exists!")
 
-    ttk.Button(win, text="Register", style="Green.TButton", command=save).pack(pady=10)
+        register_user(name, email, password)
 
-# Login
-def open_login():
-    win = Toplevel(window)
-    win.title("Login")
-    win.geometry("400x250")
+        messagebox.showinfo(
+            "Success",
+            "User Registered Successfully"
+        )
 
-    Label(win, text="Email").pack()
-    email = Entry(win, width=30)
-    email.pack(pady=5)
+    # =========================
+    # REGISTER BUTTON
+    # =========================
 
-    Label(win, text="Password").pack()
-    password = Entry(win, show="*", width=30)
-    password.pack(pady=5)
+   
+    register_button = Button(
+        register_window,
+        text="Register",
+        bg="green",
+        font=("Arial", 12, "bold"),
+        width=15,
+        command=save_user
+    )
 
-    def check():
-        name = login_user(email.get(), password.get())
-        if name:
-            messagebox.showinfo("Welcome", f"Welcome, {name}!")
-            win.destroy()
-        else:
-            messagebox.showerror("Error", "Wrong email or password!")
+    register_button.pack(pady=15)
 
-    ttk.Button(win, text="Login", style="Blue.TButton", command=check).pack(pady=10)
+# =========================
+# MAIN WINDOW BUTTONS
+# =========================
 
-# Main Buttons
-ttk.Button(window, text="Register", width=20, style="Green.TButton", command=open_register).pack(pady=10)
-ttk.Button(window, text="Login", width=20, style="Blue.TButton", command=open_login).pack(pady=10)
-ttk.Button(window, text="View Products", width=20, style="Orange.TButton").pack(pady=10)
+# =========================
+# REGISTER BUTTON
+# =========================
+
+register_btn = Label(
+    main_frame,
+    text="Register",
+    bg="green",
+    fg="white",
+    font=("Arial", 12, "bold"),
+    width=20,
+    height=2,
+    cursor="hand2"
+)
+
+register_btn.pack(pady=10)
+
+register_btn.bind(
+    "<Button-1>",
+    lambda e: open_register()
+)
+
+# =========================
+# LOGIN BUTTON
+# =========================
+
+login_btn = Label(
+    main_frame,
+    text="Login",
+    bg="darkblue",
+    fg="white",
+    font=("Arial", 12, "bold"),
+    width=20,
+    height=2,
+    cursor="hand2"
+)
+
+login_btn.pack(pady=10)
+
+# =========================
+# VIEW PRODUCTS BUTTON
+# =========================
+
+view_btn = Label(
+    main_frame,
+    text="View Products",
+    bg="orange",
+    fg="white",
+    font=("Arial", 12, "bold"),
+    width=20,
+    height=2,
+    cursor="hand2"
+)
+
+view_btn.pack(pady=10)
+
+# =========================
+# RUN WINDOW
+# =========================
 
 window.mainloop()
