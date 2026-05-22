@@ -46,7 +46,7 @@ def open_register() :
     password_entry=Entry(register_window,show="*",width=30,font=("Arial",11))
     password_entry.pack(pady=5)
 
-    # now save user register data 
+    # now save user register data  
 
     def save_user() :
         name=name_entry.get()
@@ -59,13 +59,19 @@ def open_register() :
         register_user(name,email,password)
         messagebox.showinfo("Success.!!", "User Registered Successfully")
     Button(register_window,text="Register", command=save_user).pack(pady=10)
+
 # register button
+
 register_btn=Button(window, text="Register" , width=20, bg="green" , fg="white" ,font=("Arial", 12, "bold"),command=open_register) # connect register window to main window
 register_btn.pack(pady=10)
+
 # Login Button
+
 Login_btn=Button(window, text="Login",width=20,bg="blue",fg="white",font=("Arial",12,"bold"))
 Login_btn.pack(pady=10)
+
 # view products button
+
 view_btn=Button(window, text="View Products",width=20,bg="orange",fg="white",font=("Arial",12,"bold"))
 view_btn.pack(pady=10)
 window.mainloop()
