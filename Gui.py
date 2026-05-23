@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from auth import register_user, login_user
-from product import add_product,get_products
+from product import add_product, get_products
 import os
 
 # =========================
@@ -50,7 +50,7 @@ logo_label.pack(pady=10)
 title = Label(
     main_frame,
     text="Welcome to the OLX Clone",
-    font=("Arial", 18, "bold"),
+    font=("Arial", 20, "bold"),
     bg="white",
     fg="darkgreen"
 )
@@ -76,37 +76,31 @@ def open_dashboard(user):
     user_name = user[1]
     user_email = user[2]
 
-    # =========================
-    # WELCOME LABEL
-    # =========================
+    # Welcome Label
 
     welcome_label = Label(
         dashboard,
         text=f"Welcome, {user_name}",
-        font=("Arial", 20, "bold"),
+        font=("Arial", 22, "bold"),
         bg="#f5f5f5",
         fg="darkgreen"
     )
 
     welcome_label.pack(pady=25)
 
-    # =========================
-    # SUBTITLE
-    # =========================
+    # Subtitle
 
     subtitle = Label(
         dashboard,
-        text="Manage Your Products Easily..!!",
+        text="Manage Your Products Easily",
         font=("Arial", 11),
         bg="#f5f5f5",
         fg="gray"
     )
 
-    subtitle.pack(pady=5)
+    subtitle.pack()
 
-    # =========================
-    # EMAIL LABEL
-    # =========================
+    # Email
 
     email_label = Label(
         dashboard,
@@ -116,7 +110,7 @@ def open_dashboard(user):
         fg="gray"
     )
 
-    email_label.pack(pady=10)
+    email_label.pack(pady=15)
 
     # =========================
     # ADD PRODUCT BUTTON
@@ -130,15 +124,15 @@ def open_dashboard(user):
         font=("Arial", 12, "bold"),
         width=22,
         height=2,
-        bd=0,
         cursor="hand2"
     )
 
-    add_product_btn.pack(pady=12)
+    add_product_btn.pack(pady=10)
+
     add_product_btn.bind(
-    "<Button-1>",
-    lambda e: open_add_product(user)
-)
+        "<Button-1>",
+        lambda e: open_add_product(user)
+    )
 
     # =========================
     # VIEW PRODUCTS BUTTON
@@ -152,15 +146,15 @@ def open_dashboard(user):
         font=("Arial", 12, "bold"),
         width=22,
         height=2,
-        bd=0,
         cursor="hand2"
     )
 
-    view_products_btn.pack(pady=12)
+    view_products_btn.pack(pady=10)
+
     view_products_btn.bind(
-    "<Button-1>",
-    lambda e: open_products_window()
-)
+        "<Button-1>",
+        lambda e: open_products_window()
+    )
 
     # =========================
     # LOGOUT BUTTON
@@ -174,29 +168,36 @@ def open_dashboard(user):
         font=("Arial", 12, "bold"),
         width=22,
         height=2,
-        bd=0,
         cursor="hand2"
     )
 
-    logout_btn.pack(pady=30)
+    logout_btn.pack(pady=25)
 
     logout_btn.bind(
         "<Button-1>",
         lambda e: dashboard.destroy()
     )
 
-#  =======Add Product Window ============
+# =========================
+# ADD PRODUCT WINDOW
+# =========================
+
 def open_add_product(user):
 
     add_window = Toplevel(window)
+
     add_window.title("Add Product")
-    add_window.geometry("520x600")
+
+    add_window.geometry("500x550")
+
     add_window.configure(bg="#f5f5f5")
+
     add_window.resizable(False, False)
 
     seller_name = user[1]
 
     # Heading
+
     heading = Label(
         add_window,
         text="Add New Product",
@@ -204,65 +205,30 @@ def open_add_product(user):
         bg="#f5f5f5",
         fg="darkgreen"
     )
+
     heading.pack(pady=20)
 
-    # =========================
-    # SELLER FRAME
-    # =========================
-    seller_frame = LabelFrame(
+    # Seller
+
+    seller_label = Label(
         add_window,
-        text="Seller Information",
-        font=("Arial", 12, "bold"),
-        bg="#f5f5f5",
-        fg="black",
-        padx=10,
-        pady=10
-    )
-    seller_frame.pack(pady=10, fill="x", padx=20)
-
-    seller_name_label = Label(
-        seller_frame,
-        text=f"Name: {user[1]}",
-        bg="#f5f5f5",
-        font=("Arial", 11)
-    )
-    seller_name_label.pack(anchor="w")
-
-    seller_email_label = Label(
-        seller_frame,
-        text=f"Email: {user[2]}",
-        bg="#f5f5f5",
-        font=("Arial", 11)
-    )
-    seller_email_label.pack(anchor="w")
-
-    # Subtitle
-    subtitle = Label(
-        add_window,
-        text="Add Product Info Carefully..!!",
-        font=("Arial", 11),
+        text=f"Seller: {seller_name}",
+        font=("Arial", 12),
         bg="#f5f5f5",
         fg="gray"
     )
-    subtitle.pack(pady=5)
 
-    # Product section title
-    product_label = Label(
-        add_window,
-        text="Product Information",
-        font=("Arial", 13, "bold"),
-        bg="#f5f5f5",
-        fg="black"
-    )
-    product_label.pack(pady=10)
+    seller_label.pack(pady=5)
 
-    # Title
+    # Product Title
+
     title_label = Label(
         add_window,
         text="Product Title",
         font=("Arial", 12, "bold"),
         bg="#f5f5f5"
     )
+
     title_label.pack()
 
     title_entry = Entry(
@@ -270,15 +236,18 @@ def open_add_product(user):
         width=40,
         font=("Arial", 11)
     )
+
     title_entry.pack(pady=5)
 
     # Price
+
     price_label = Label(
         add_window,
         text="Price",
         font=("Arial", 12, "bold"),
         bg="#f5f5f5"
     )
+
     price_label.pack()
 
     price_entry = Entry(
@@ -286,26 +255,31 @@ def open_add_product(user):
         width=40,
         font=("Arial", 11)
     )
+
     price_entry.pack(pady=5)
 
     # Description
+
     desc_label = Label(
         add_window,
         text="Description",
         font=("Arial", 12, "bold"),
         bg="#f5f5f5"
     )
+
     desc_label.pack()
 
     desc_text = Text(
         add_window,
         width=40,
-        height=5,
+        height=6,
         font=("Arial", 11)
     )
+
     desc_text.pack(pady=5)
 
-    # Save function
+    # Save Product
+
     def save_product():
 
         title = title_entry.get()
@@ -313,29 +287,42 @@ def open_add_product(user):
         description = desc_text.get("1.0", END)
 
         if title == "" or price == "" or description.strip() == "":
-            messagebox.showerror("Error", "Please fill all fields")
+
+            messagebox.showerror(
+                "Error",
+                "Please fill all fields"
+            )
+
             return
 
         add_product(title, price, description, seller_name)
 
-        messagebox.showinfo("Success", "Product Added Successfully")
+        messagebox.showinfo(
+            "Success",
+            "Product Added Successfully"
+        )
 
         add_window.destroy()
 
-    # Save button
+    # Save Button
+
     save_btn = Label(
         add_window,
         text="Save Product",
-        font=("Arial", 12, "bold"),
         bg="green",
         fg="white",
+        font=("Arial", 12, "bold"),
         width=20,
         height=2,
         cursor="hand2"
     )
 
     save_btn.pack(pady=20)
-    save_btn.bind("<Button-1>", lambda e: save_product())
+
+    save_btn.bind(
+        "<Button-1>",
+        lambda e: save_product()
+    )
 
 # =========================
 # VIEW PRODUCTS WINDOW
@@ -347,141 +334,83 @@ def open_products_window():
 
     products_window.title("All Products")
 
-    products_window.geometry("700x600")
+    products_window.geometry("750x600")
 
-    products_window.configure(bg="#f5f5f5")
+    products_window.configure(bg="#f0f2f5")
 
     products_window.resizable(False, False)
 
     # =========================
-    # HEADING
+    # TOP FRAME
     # =========================
 
-    heading = Label(
+    top_frame = Frame(
         products_window,
+        bg="#f0f2f5"
+    )
+
+    top_frame.pack(fill="x", pady=10)
+
+    # Back Button
+
+    back_btn = Label(
+        top_frame,
+        text="← Back",
+        bg="#f0f2f5",
+        fg="darkblue",
+        font=("Arial", 12, "bold"),
+        cursor="hand2"
+    )
+
+    back_btn.pack(side="left", padx=20)
+
+    # Heading
+
+    heading = Label(
+        top_frame,
         text="All Products",
-        font=("Arial", 20, "bold"),
-        bg="#f5f5f5",
+        font=("Arial", 22, "bold"),
+        bg="#f0f2f5",
         fg="darkgreen"
     )
 
-    heading.pack(pady=15)
+    heading.pack()
+
+    # Subtitle
+
+    subtitle = Label(
+        products_window,
+        text="Browse All Available Products",
+        font=("Arial", 11),
+        bg="#f0f2f5",
+        fg="gray"
+    )
+
+    subtitle.pack()
 
     # =========================
-    # SEARCH BAR
+    # SEARCH FRAME
     # =========================
+
+    search_frame = Frame(
+        products_window,
+        bg="#f0f2f5"
+    )
+
+    search_frame.pack(pady=15)
 
     search_entry = Entry(
-        products_window,
+        search_frame,
         width=35,
-        font=("Arial", 12)
+        font=("Arial", 12),
+        bd=2,
+        relief="groove"
     )
 
-    search_entry.pack(pady=10)
-
-    # =========================
-    # PRODUCTS FRAME
-    # =========================
-
-    products_frame = Frame(
-        products_window,
-        bg="#f5f5f5"
-    )
-
-    products_frame.pack(fill="both", expand=True)
-
-    # =========================
-    # SHOW PRODUCTS FUNCTION
-    # =========================
-
-    def show_products(search_text=""):
-
-        # old widgets remove
-        for widget in products_frame.winfo_children():
-            widget.destroy()
-
-        products = get_products()
-
-        for product in products:
-
-            product_id = product[0]
-            title = product[1]
-            price = product[2]
-            description = product[3]
-            seller = product[4]
-
-            # search filter
-            if search_text.lower() not in title.lower():
-                continue
-
-            # =========================
-            # PRODUCT CARD
-            # =========================
-
-            card = Frame(
-                products_frame,
-                bg="white",
-                bd=1,
-                relief="solid"
-            )
-
-            card.pack(
-                pady=10,
-                padx=20,
-                fill="x"
-            )
-
-            # Title
-            title_label = Label(
-                card,
-                text=title,
-                font=("Arial", 16, "bold"),
-                bg="white",
-                fg="darkgreen"
-            )
-
-            title_label.pack(anchor="w", padx=10, pady=5)
-
-            # Price
-            price_label = Label(
-                card,
-                text=f"Price: Rs. {price}",
-                font=("Arial", 12, "bold"),
-                bg="white",
-                fg="blue"
-            )
-
-            price_label.pack(anchor="w", padx=10)
-
-            # Description
-            desc_label = Label(
-                card,
-                text=f"Description: {description}",
-                font=("Arial", 11),
-                bg="white",
-                wraplength=600,
-                justify="left"
-            )
-
-            desc_label.pack(anchor="w", padx=10, pady=5)
-
-            # Seller
-            seller_label = Label(
-                card,
-                text=f"Seller: {seller}",
-                font=("Arial", 10, "italic"),
-                bg="white",
-                fg="gray"
-            )
-
-            seller_label.pack(anchor="w", padx=10, pady=5)
-
-    # =========================
-    # SEARCH BUTTON
-    # =========================
+    search_entry.grid(row=0, column=0, padx=10)
 
     search_btn = Label(
-        products_window,
+        search_frame,
         text="Search",
         bg="darkblue",
         fg="white",
@@ -491,15 +420,202 @@ def open_products_window():
         cursor="hand2"
     )
 
-    search_btn.pack(pady=10)
+    search_btn.grid(row=0, column=1)
+
+    # =========================
+    # SCROLLABLE AREA
+    # =========================
+
+    canvas = Canvas(
+        products_window,
+        bg="#f0f2f5",
+        highlightthickness=0
+    )
+
+    scrollbar = Scrollbar(
+        products_window,
+        orient="vertical",
+        command=canvas.yview
+    )
+
+    scrollable_frame = Frame(
+        canvas,
+        bg="#f0f2f5"
+    )
+
+    scrollable_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
+    )
+
+    canvas.create_window(
+        (0, 0),
+        window=scrollable_frame,
+        anchor="nw"
+    )
+
+    canvas.configure(
+        yscrollcommand=scrollbar.set
+    )
+
+    canvas.pack(
+        side="left",
+        fill="both",
+        expand=True,
+        padx=10
+    )
+
+    scrollbar.pack(
+        side="right",
+        fill="y"
+    )
+
+    # =========================
+    # SHOW PRODUCTS FUNCTION
+    # =========================
+
+    def show_products(search_text=""):
+
+        for widget in scrollable_frame.winfo_children():
+            widget.destroy()
+
+        products = get_products()
+
+        found = False
+
+        for product in products:
+
+            product_id = product[0]
+            title = product[1]
+            price = product[2]
+            description = product[3]
+            seller = product[4]
+
+            # Search Filter
+
+            if search_text.lower() not in title.lower():
+                continue
+
+            found = True
+
+            # =========================
+            # PRODUCT CARD
+            # =========================
+
+            card = Frame(
+                scrollable_frame,
+                bg="white",
+                bd=2,
+                relief="ridge",
+                padx=10,
+                pady=10
+            )
+
+            card.pack(
+                pady=12,
+                padx=20,
+                fill="x"
+            )
+
+            # Title
+
+            title_label = Label(
+                card,
+                text=title,
+                font=("Arial", 17, "bold"),
+                bg="white",
+                fg="#1b5e20"
+            )
+
+            title_label.pack(
+                anchor="w",
+                pady=2
+            )
+
+            # Price
+
+            price_label = Label(
+                card,
+                text=f"Rs. {price}",
+                font=("Arial", 14, "bold"),
+                bg="white",
+                fg="#0d47a1"
+            )
+
+            price_label.pack(
+                anchor="w",
+                pady=3
+            )
+
+            # Description
+
+            desc_label = Label(
+                card,
+                text=description,
+                font=("Arial", 11),
+                bg="white",
+                fg="#333333",
+                wraplength=620,
+                justify="left"
+            )
+
+            desc_label.pack(
+                anchor="w",
+                pady=5
+            )
+
+            # Seller
+
+            seller_label = Label(
+                card,
+                text=f"Seller: {seller}",
+                font=("Arial", 10, "italic"),
+                bg="white",
+                fg="gray"
+            )
+
+            seller_label.pack(
+                anchor="w",
+                pady=5
+            )
+
+        # No Product Found
+
+        if found == False:
+
+            no_product = Label(
+                scrollable_frame,
+                text="No Products Found",
+                font=("Arial", 15, "bold"),
+                bg="#f0f2f5",
+                fg="red"
+            )
+
+            no_product.pack(pady=30)
+
+    # Search Button
 
     search_btn.bind(
         "<Button-1>",
         lambda e: show_products(search_entry.get())
     )
 
-    # show all products first time
+    # Back Button
+
+    back_btn.bind(
+        "<Button-1>",
+        lambda e: (
+            search_entry.delete(0, END),
+            show_products()
+        )
+    )
+
+    # Show Products First Time
+
     show_products()
+
 # =========================
 # REGISTER WINDOW
 # =========================
@@ -515,8 +631,6 @@ def open_register():
     register_window.configure(bg="white")
 
     register_window.resizable(False, False)
-
-    # Heading
 
     heading = Label(
         register_window,
@@ -580,15 +694,13 @@ def open_register():
 
     password_entry.pack(pady=5)
 
-    # Save User Function
+    # Save User
 
     def save_user():
 
         name = name_entry.get()
         email = email_entry.get()
         password = password_entry.get()
-
-        # Validation
 
         if name == "" or email == "" or password == "":
 
@@ -621,7 +733,7 @@ def open_register():
         cursor="hand2"
     )
 
-    register_button.pack(pady=15)
+    register_button.pack(pady=20)
 
     register_button.bind(
         "<Button-1>",
@@ -643,8 +755,6 @@ def open_login():
     login_window.configure(bg="white")
 
     login_window.resizable(False, False)
-
-    # Heading
 
     heading = Label(
         login_window,
@@ -789,6 +899,5 @@ login_btn.bind(
 # =========================
 # RUN WINDOW
 # =========================
-
 
 window.mainloop()
