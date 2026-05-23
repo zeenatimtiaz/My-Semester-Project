@@ -1,6 +1,5 @@
 import sqlite3
 
-
 # Database connection
 def connect():
     conn = sqlite3.connect("database/olx.db")
