@@ -33,3 +33,22 @@ def login_user(email, password):
     conn.close()
 
     return user
+
+def delete_user(email, password):
+
+    conn = connect()
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM users WHERE email = ? AND password = ?",
+        (email, password)
+    )
+
+    conn.commit()
+
+    deleted = cursor.rowcount
+
+    conn.close()
+
+    return deleted
