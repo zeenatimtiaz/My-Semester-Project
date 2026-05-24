@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-from auth import register_user, login_user
+from auth import register_user, login_user, delete_user
 from product import add_product, get_products
 import os
 
@@ -11,7 +11,7 @@ import os
 window = Tk()
 
 window.title("OLX Desktop Clone")
-window.geometry("700x500")
+window.geometry("700x550")
 window.configure(bg="white")
 
 window.resizable(False, False)
@@ -340,9 +340,7 @@ def open_products_window():
 
     products_window.resizable(False, False)
 
-    # =========================
     # TOP FRAME
-    # =========================
 
     top_frame = Frame(
         products_window,
@@ -485,24 +483,22 @@ def open_products_window():
 
         found = False
 
+        row = 0
+        col = 0
+
         for product in products:
 
-            product_id = product[0]
             title = product[1]
             price = product[2]
             description = product[3]
             seller = product[4]
-
-            # Search Filter
 
             if search_text.lower() not in title.lower():
                 continue
 
             found = True
 
-            # =========================
-            # PRODUCT CARD
-            # =========================
+            # Product Card
 
             card = Frame(
                 scrollable_frame,
@@ -510,29 +506,33 @@ def open_products_window():
                 bd=2,
                 relief="ridge",
                 padx=10,
-                pady=10
+                pady=10,
+                width=300,
+                height=220
             )
 
-            card.pack(
-                pady=12,
-                padx=20,
-                fill="x"
+            card.grid(
+                row=row,
+                column=col,
+                padx=15,
+                pady=15
             )
+
+            card.grid_propagate(False)
 
             # Title
 
             title_label = Label(
                 card,
                 text=title,
-                font=("Arial", 17, "bold"),
+                font=("Arial", 16, "bold"),
                 bg="white",
-                fg="#1b5e20"
+                fg="#1b5e20",
+                wraplength=250,
+                justify="left"
             )
 
-            title_label.pack(
-                anchor="w",
-                pady=2
-            )
+            title_label.pack(anchor="w")
 
             # Price
 
@@ -544,27 +544,21 @@ def open_products_window():
                 fg="#0d47a1"
             )
 
-            price_label.pack(
-                anchor="w",
-                pady=3
-            )
+            price_label.pack(anchor="w", pady=5)
 
             # Description
 
             desc_label = Label(
                 card,
                 text=description,
-                font=("Arial", 11),
+                font=("Arial", 10),
                 bg="white",
                 fg="#333333",
-                wraplength=620,
+                wraplength=250,
                 justify="left"
             )
 
-            desc_label.pack(
-                anchor="w",
-                pady=5
-            )
+            desc_label.pack(anchor="w", pady=5)
 
             # Seller
 
@@ -576,12 +570,13 @@ def open_products_window():
                 fg="gray"
             )
 
-            seller_label.pack(
-                anchor="w",
-                pady=5
-            )
+            seller_label.pack(anchor="w", pady=5)
 
-        # No Product Found
+            col += 1
+
+            if col == 2:
+                col = 0
+                row += 1
 
         if found == False:
 
@@ -612,8 +607,6 @@ def open_products_window():
         )
     )
 
-    # Show Products First Time
-
     show_products()
 
 # =========================
@@ -642,8 +635,6 @@ def open_register():
 
     heading.pack(pady=15)
 
-    # Name
-
     Label(
         register_window,
         text="Name",
@@ -658,8 +649,6 @@ def open_register():
     )
 
     name_entry.pack(pady=5)
-
-    # Email
 
     Label(
         register_window,
@@ -676,8 +665,6 @@ def open_register():
 
     email_entry.pack(pady=5)
 
-    # Password
-
     Label(
         register_window,
         text="Password",
@@ -693,8 +680,6 @@ def open_register():
     )
 
     password_entry.pack(pady=5)
-
-    # Save User
 
     def save_user():
 
@@ -719,8 +704,6 @@ def open_register():
         )
 
         register_window.destroy()
-
-    # Register Button
 
     register_button = Label(
         register_window,
@@ -766,8 +749,6 @@ def open_login():
 
     heading.pack(pady=20)
 
-    # Email
-
     Label(
         login_window,
         text="Email",
@@ -782,8 +763,6 @@ def open_login():
     )
 
     email_entry.pack(pady=5)
-
-    # Password
 
     Label(
         login_window,
@@ -800,8 +779,6 @@ def open_login():
     )
 
     password_entry.pack(pady=5)
-
-    # Login Function
 
     def login_user_gui():
 
@@ -832,8 +809,6 @@ def open_login():
                 "Invalid Email or Password"
             )
 
-    # Login Button
-
     login_button = Label(
         login_window,
         text="Login",
@@ -850,6 +825,120 @@ def open_login():
     login_button.bind(
         "<Button-1>",
         lambda e: login_user_gui()
+    )
+
+# =========================
+# DELETE ACCOUNT WINDOW
+# =========================
+
+def open_delete_account():
+
+    delete_window = Toplevel(window)
+
+    delete_window.title("Delete Account")
+
+    delete_window.geometry("400x350")
+
+    delete_window.configure(bg="white")
+
+    delete_window.resizable(False, False)
+
+    heading = Label(
+        delete_window,
+        text="Delete Your Account",
+        font=("Arial", 18, "bold"),
+        bg="white",
+        fg="red"
+    )
+
+    heading.pack(pady=20)
+
+    Label(
+        delete_window,
+        text="Email",
+        font=("Arial", 12, "bold"),
+        bg="white"
+    ).pack()
+
+    email_entry = Entry(
+        delete_window,
+        width=30,
+        font=("Arial", 11)
+    )
+
+    email_entry.pack(pady=5)
+
+    Label(
+        delete_window,
+        text="Password",
+        font=("Arial", 12, "bold"),
+        bg="white"
+    ).pack()
+
+    password_entry = Entry(
+        delete_window,
+        width=30,
+        font=("Arial", 11),
+        show="*"
+    )
+
+    password_entry.pack(pady=5)
+
+    def delete_account():
+
+        email = email_entry.get()
+        password = password_entry.get()
+
+        if email == "" or password == "":
+
+            messagebox.showerror(
+                "Error",
+                "Please fill all fields"
+            )
+
+            return
+
+        confirm = messagebox.askyesno(
+            "Confirm Delete",
+            "Are you sure you want to delete account?"
+        )
+
+        if confirm:
+
+            deleted = delete_user(email, password)
+
+            if deleted:
+
+                messagebox.showinfo(
+                    "Success",
+                    "Account Deleted Successfully"
+                )
+
+                delete_window.destroy()
+
+            else:
+
+                messagebox.showerror(
+                    "Error",
+                    "Invalid Email or Password"
+                )
+
+    delete_btn = Label(
+        delete_window,
+        text="Delete Account",
+        bg="red",
+        fg="white",
+        font=("Arial", 12, "bold"),
+        width=20,
+        height=2,
+        cursor="hand2"
+    )
+
+    delete_btn.pack(pady=25)
+
+    delete_btn.bind(
+        "<Button-1>",
+        lambda e: delete_account()
     )
 
 # =========================
@@ -894,6 +983,26 @@ login_btn.pack(pady=10)
 login_btn.bind(
     "<Button-1>",
     lambda e: open_login()
+)
+
+# Delete Account Button
+
+delete_account_btn = Label(
+    main_frame,
+    text="Delete Account",
+    bg="red",
+    fg="white",
+    font=("Arial", 12, "bold"),
+    width=20,
+    height=2,
+    cursor="hand2"
+)
+
+delete_account_btn.pack(pady=10)
+
+delete_account_btn.bind(
+    "<Button-1>",
+    lambda e: open_delete_account()
 )
 
 # =========================
