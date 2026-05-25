@@ -776,7 +776,7 @@ def open_delete_account():
 
     delete_window.geometry("400x350")
 
-    delete_window.configure(bg="#f2f4f5")
+    delete_window.configure(bg="#dff6f0")
 
     heading = Label(
         delete_window,
