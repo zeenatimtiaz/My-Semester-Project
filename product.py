@@ -7,15 +7,15 @@ def connect():
 
 
 # Add new product
-def add_product(title, price, description, seller):
+def add_product(title, price, description, seller,image):
 
     conn = connect()
     cursor = conn.cursor()
 
     cursor.execute("""
-    INSERT INTO products (title, price, description, seller)
-    VALUES (?, ?, ?, ?)
-    """, (title, price, description, seller))
+    INSERT INTO products (title, price, description, seller,image)
+    VALUES (?, ?, ?, ?,?)
+    """, (title, price, description, seller,image))
 
     conn.commit()
     conn.close()
@@ -27,8 +27,10 @@ def get_products():
     conn = connect()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM products")
-
+    cursor.execute("""
+ SELECT id, title, price, description, seller, image
+ FROM products
+ """)
     products = cursor.fetchall()
 
     conn.close()

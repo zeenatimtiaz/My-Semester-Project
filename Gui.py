@@ -4,6 +4,7 @@
 
 from tkinter import *
 from tkinter import messagebox, filedialog
+from PIL import Image,ImageTk
 from auth import register_user, login_user, delete_user
 from product import add_product, get_products
 import os
@@ -212,6 +213,7 @@ def open_add_product(user):
     add_window.geometry("500x650")
 
     add_window.configure(bg="#dff6f0")
+    add_window.grab_set()  
 
     seller_name = user[1]
 
@@ -278,12 +280,14 @@ def open_add_product(user):
     desc_text.pack(pady=8)
 
     # IMAGE UPLOAD
+# IMAGE UPL    # IMAGE UPLOAD
 
     image_path = StringVar()
 
     def upload_image():
 
         file = filedialog.askopenfilename(
+            parent=add_window,
             title="Select Product Image",
             filetypes=[
                 ("PNG Files", "*.png"),
@@ -292,11 +296,11 @@ def open_add_product(user):
             ]
         )
 
-        image_path.set(file)
+        if file:
+            image_path.set(file)
+            image_label.config(text="✅ Image Selected")
 
-        image_label.config(
-            text="✅ Image Uploaded"
-        )
+    # UPLOAD BUTTON
 
     upload_btn = Label(
         add_window,
@@ -315,6 +319,8 @@ def open_add_product(user):
         "<Button-1>",
         lambda e: upload_image()
     )
+
+    # IMAGE LABEL
 
     image_label = Label(
         add_window,
@@ -349,7 +355,8 @@ def open_add_product(user):
             title,
             price,
             description,
-            seller_name
+            seller_name,
+            image_path.get()
         )
 
         messagebox.showinfo(
@@ -358,6 +365,8 @@ def open_add_product(user):
         )
 
         add_window.destroy()
+
+    # SAVE BUTTON
 
     save_btn = Label(
         add_window,
@@ -376,7 +385,6 @@ def open_add_product(user):
         "<Button-1>",
         lambda e: save_product()
     )
-
 # =========================
 # VIEW PRODUCTS WINDOW
 # =========================
@@ -384,11 +392,8 @@ def open_add_product(user):
 def open_products_window():
 
     products_window = Toplevel(window)
-
     products_window.title("All Products")
-
     products_window.geometry("850x650")
-
     products_window.configure(bg="#dff6f0")
 
     heading = Label(
@@ -398,7 +403,6 @@ def open_products_window():
         bg="#dff6f0",
         fg="#002f34"
     )
-
     heading.pack(pady=20)
 
     canvas = Canvas(
@@ -413,38 +417,18 @@ def open_products_window():
         command=canvas.yview
     )
 
-    scrollable_frame = Frame(
-        canvas,
-        bg="#dff6f0"
-    )
+    scrollable_frame = Frame(canvas, bg="#dff6f0")
 
     scrollable_frame.bind(
         "<Configure>",
-        lambda e: canvas.configure(
-            scrollregion=canvas.bbox("all")
-        )
+        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
     )
 
-    canvas.create_window(
-        (0, 0),
-        window=scrollable_frame,
-        anchor="nw"
-    )
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
 
-    canvas.configure(
-        yscrollcommand=scrollbar.set
-    )
-
-    canvas.pack(
-        side="left",
-        fill="both",
-        expand=True
-    )
-
-    scrollbar.pack(
-        side="right",
-        fill="y"
-    )
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
 
     products = get_products()
 
@@ -457,8 +441,7 @@ def open_products_window():
         price = product[2]
         description = product[3]
         seller = product[4]
-
-        # PRODUCT CARD
+        image_path = product[5]   # ✅ IMPORTANT FIX
 
         card = Frame(
             scrollable_frame,
@@ -471,111 +454,78 @@ def open_products_window():
             highlightthickness=2
         )
 
-        card.grid(
-            row=row,
-            column=col,
-            padx=20,
-            pady=20
-        )
-
+        card.grid(row=row, column=col, padx=20, pady=20)
         card.grid_propagate(False)
 
-        # IMAGE PLACEHOLDER
+        # ======================
+        # IMAGE SECTION (FIXED)
+        # ======================
+        try:
+            if image_path:
+                img = Image.open(image_path)
+                img = img.resize((200, 150))
+                img = ImageTk.PhotoImage(img)
 
-        image_box = Label(
-            card,
-            text="📷 Product Image",
-            bg="#eeeeee",
-            fg="gray",
-            width=30,
-            height=6
-        )
+                image_label = Label(card, image=img)
+                image_label.image = img
+                image_label.pack(pady=10)
 
-        image_box.pack(pady=10)
+            else:
+                raise Exception("No Image")
+
+        except:
+            image_label = Label(
+                card,
+                text="No Image Available",
+                bg="#eeeeee",
+                fg="gray",
+                width=25,
+                height=6
+            )
+            image_label.pack(pady=10)
 
         # TITLE
-
-        title_label = Label(
+        Label(
             card,
             text=title,
             font=("Helvetica", 16, "bold"),
-            bg="#dff6f0",
+            bg="white",
             fg="#002f34",
             wraplength=250
-        )
-
-        title_label.pack()
+        ).pack()
 
         # PRICE
-
-        price_label = Label(
+        Label(
             card,
             text=f"Rs. {price}",
             font=("Helvetica", 14, "bold"),
             bg="white",
             fg="#00a49f"
-        )
-
-        price_label.pack(pady=5)
+        ).pack(pady=5)
 
         # DESCRIPTION
-
-        desc_label = Label(
+        Label(
             card,
             text=description,
             font=("Helvetica", 10),
             bg="white",
             fg="gray",
             wraplength=250
-        )
-
-        desc_label.pack()
+        ).pack()
 
         # SELLER
-
-        seller_label = Label(
+        Label(
             card,
             text=f"Seller: {seller}",
             font=("Helvetica", 10, "italic"),
             bg="white",
             fg="gray"
-        )
-
-        seller_label.pack(pady=5)
-
-        # BUY BUTTON
-
-        def buy_product(product_name=title):
-
-            messagebox.showinfo(
-                "Success",
-                f"You bought {product_name}"
-            )
-
-        buy_btn = Label(
-            card,
-            text="🛍 Buy Now",
-            bg="#3a77ff",
-            fg="white",
-            font=("Helvetica", 12, "bold"),
-            width=18,
-            height=2,
-            cursor="hand2"
-        )
-
-        buy_btn.pack(pady=10)
-
-        buy_btn.bind(
-            "<Button-1>",
-            lambda e, p=title: buy_product(p)
-        )
+        ).pack(pady=5)
 
         col += 1
-
         if col == 2:
             col = 0
             row += 1
-
 # =========================
 # REGISTER WINDOW
 # =========================
