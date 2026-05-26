@@ -389,21 +389,79 @@ def open_add_product(user):
 # VIEW PRODUCTS WINDOW
 # =========================
 
+# =========================
+# VIEW PRODUCTS WINDOW
+# =========================
+
 def open_products_window():
 
     products_window = Toplevel(window)
+
     products_window.title("All Products")
-    products_window.geometry("850x650")
+
+    products_window.geometry("1000x700")
+
     products_window.configure(bg="#dff6f0")
+
+    # =========================
+    # HEADING
+    # =========================
 
     heading = Label(
         products_window,
         text="Available Products",
-        font=("Helvetica", 24, "bold"),
+        font=("Helvetica", 28, "bold"),
         bg="#dff6f0",
         fg="#002f34"
     )
+
     heading.pack(pady=20)
+
+    # =========================
+    # SEARCH BAR
+    # =========================
+
+    search_frame = Frame(
+        products_window,
+        bg="#dff6f0"
+    )
+
+    search_frame.pack(pady=10)
+
+    search_entry = Entry(
+        search_frame,
+        width=40,
+        font=("Helvetica", 13),
+        relief="solid",
+        bd=1
+    )
+
+    search_entry.pack(
+        side=LEFT,
+        ipady=8,
+        padx=10
+    )
+
+    search_btn = Button(
+        search_frame,
+        text="🔍 Search",
+        bg="#2f6df6",
+        fg="white",
+        activebackground="#2457c5",
+        activeforeground="white",
+        font=("Helvetica", 12, "bold"),
+        cursor="hand2",
+        relief="flat",
+        bd=0,
+        padx=20,
+        pady=8
+    )
+
+    search_btn.pack(side=LEFT)
+
+    # =========================
+    # SCROLLABLE AREA
+    # =========================
 
     canvas = Canvas(
         products_window,
@@ -417,115 +475,263 @@ def open_products_window():
         command=canvas.yview
     )
 
-    scrollable_frame = Frame(canvas, bg="#dff6f0")
+    scrollable_frame = Frame(
+        canvas,
+        bg="#dff6f0"
+    )
 
     scrollable_frame.bind(
         "<Configure>",
-        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
     )
 
-    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
+    canvas.create_window(
+        (0, 0),
+        window=scrollable_frame,
+        anchor="nw"
+    )
 
-    canvas.pack(side="left", fill="both", expand=True)
-    scrollbar.pack(side="right", fill="y")
+    canvas.configure(
+        yscrollcommand=scrollbar.set
+    )
 
-    products = get_products()
+    canvas.pack(
+        side="left",
+        fill="both",
+        expand=True
+    )
 
-    row = 0
-    col = 0
+    scrollbar.pack(
+        side="right",
+        fill="y"
+    )
 
-    for product in products:
+    # =========================
+    # LOAD PRODUCTS
+    # =========================
 
-        title = product[1]
-        price = product[2]
-        description = product[3]
-        seller = product[4]
-        image_path = product[5]   # ✅ IMPORTANT FIX
+    def load_products(search_text=""):
 
-        card = Frame(
-            scrollable_frame,
-            bg="white",
-            width=320,
-            height=300,
-            padx=15,
-            pady=15,
-            highlightbackground="#d9d9d9",
-            highlightthickness=2
-        )
+        for widget in scrollable_frame.winfo_children():
 
-        card.grid(row=row, column=col, padx=20, pady=20)
-        card.grid_propagate(False)
+            widget.destroy()
 
-        # ======================
-        # IMAGE SECTION (FIXED)
-        # ======================
-        try:
-            if image_path:
-                img = Image.open(image_path)
-                img = img.resize((200, 150))
-                img = ImageTk.PhotoImage(img)
+        products = get_products()
 
-                image_label = Label(card, image=img)
-                image_label.image = img
-                image_label.pack(pady=10)
+        row = 0
+        col = 0
 
-            else:
-                raise Exception("No Image")
+        for product in products:
 
-        except:
-            image_label = Label(
-                card,
-                text="No Image Available",
-                bg="#eeeeee",
-                fg="gray",
-                width=25,
-                height=6
+            title = product[1]
+
+            # SEARCH FILTER
+
+            if search_text.lower() not in title.lower():
+
+                continue
+
+            price = product[2]
+
+            description = product[3]
+
+            seller = product[4]
+
+            image_path = product[5]
+
+            # =========================
+            # PRODUCT CARD
+            # =========================
+
+            card = Frame(
+                scrollable_frame,
+                bg="#dff6f0",
+                width=340,
+                height=430,
+                highlightbackground="#dddddd",
+                highlightthickness=1
             )
-            image_label.pack(pady=10)
 
-        # TITLE
-        Label(
-            card,
-            text=title,
-            font=("Helvetica", 16, "bold"),
-            bg="white",
-            fg="#002f34",
-            wraplength=250
-        ).pack()
+            card.grid(
+                row=row,
+                column=col,
+                padx=18,
+                pady=18
+            )
 
-        # PRICE
-        Label(
-            card,
-            text=f"Rs. {price}",
-            font=("Helvetica", 14, "bold"),
-            bg="white",
-            fg="#00a49f"
-        ).pack(pady=5)
+            card.grid_propagate(False)
 
-        # DESCRIPTION
-        Label(
-            card,
-            text=description,
-            font=("Helvetica", 10),
-            bg="white",
-            fg="gray",
-            wraplength=250
-        ).pack()
+            # =========================
+            # IMAGE SECTION
+            # =========================
 
-        # SELLER
-        Label(
-            card,
-            text=f"Seller: {seller}",
-            font=("Helvetica", 10, "italic"),
-            bg="white",
-            fg="gray"
-        ).pack(pady=5)
+            image_frame = Frame(
+                card,
+                bg="#f5f5f5",
+                width=300,
+                height=150
+            )
 
-        col += 1
-        if col == 2:
-            col = 0
-            row += 1
+            image_frame.pack(
+                pady=15
+            )
+
+            image_frame.pack_propagate(False)
+
+            try:
+
+                if image_path:
+
+                    img = Image.open(image_path)
+
+                    img = img.resize((140, 120))
+
+                    img = ImageTk.PhotoImage(img)
+
+                    image_label = Label(
+                        image_frame,
+                        image=img,
+                        bg="#f5f5f5"
+                    )
+
+                    image_label.image = img
+
+                    image_label.pack(expand=True)
+
+                else:
+
+                    raise Exception("No Image")
+
+            except:
+
+                image_label = Label(
+                    image_frame,
+                    text="📷 Product Image",
+                    bg="#f5f5f5",
+                    fg="gray",
+                    font=("Helvetica", 12)
+                )
+
+                image_label.pack(expand=True)
+
+            # =========================
+            # TITLE
+            # =========================
+
+            Label(
+                card,
+                text=title,
+                font=("Helvetica", 18, "bold"),
+                bg="#dff6f0",
+                fg="#002f34"
+            ).pack(pady=(10, 5))
+
+            # =========================
+            # PRICE
+            # =========================
+
+            Label(
+                card,
+                text=f"Rs. {price}",
+                font=("Helvetica", 15, "bold"),
+                bg="#dff6f0",
+                fg="#00a49f"
+            ).pack()
+
+            # =========================
+            # DESCRIPTION
+            # =========================
+
+            Label(
+                card,
+                text=description,
+                font=("Helvetica", 10),
+                bg="#dff6f0",
+                fg="#444444",
+                wraplength=250
+            ).pack(pady=10)
+
+            # =========================
+            # SELLER
+            # =========================
+
+            Label(
+                card,
+                text=f"Seller: {seller}",
+                font=("Helvetica", 10, "italic"),
+                bg="#dff6f0",
+                fg="gray"
+            ).pack(pady=5)
+
+            # =========================
+            # BUY FUNCTION
+            # =========================
+
+            def buy_product(product_name=title):
+
+                messagebox.showinfo(
+                    "Purchase",
+                    f"You bought {product_name}"
+                )
+
+            # =========================
+            # BUY BUTTON
+            # =========================
+
+            buy_btn = Button(
+                card,
+                text="🛍 Buy Now",
+                bg="#e22ff6",
+                fg="white",
+                activebackground="#e22ff6",
+                activeforeground="#e22ff6",
+                font=("Helvetica", 11, "bold"),
+                cursor="hand2",
+                width=14,
+                height=1,
+                relief="flat",
+                bd=0,
+                padx=8,
+                pady=8
+            )
+
+            buy_btn.pack(pady=15)
+
+            buy_btn.config(command=buy_product)
+
+            # =========================
+            # GRID SYSTEM
+            # =========================
+
+            col += 1
+
+            if col == 2:
+
+                col = 0
+
+                row += 1
+
+    # =========================
+    # SEARCH FUNCTION
+    # =========================
+
+    def search_products():
+
+        text = search_entry.get()
+
+        load_products(text)
+
+    search_btn.config(
+        command=search_products
+    )
+
+    # =========================
+    # LOAD PRODUCTS
+    # =========================
+
+    load_products()
 # =========================
 # REGISTER WINDOW
 # =========================
