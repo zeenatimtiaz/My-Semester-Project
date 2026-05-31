@@ -4,10 +4,12 @@
 
 from tkinter import *
 from tkinter import messagebox, filedialog
-from PIL import Image,ImageTk
+from PIL import Image, ImageTk
 from auth import register_user, login_user, delete_user
-from product import add_product, get_products
+from product import add_product, get_products,delete_product
 import os
+
+current_user = None
 
 # =========================
 # MAIN WINDOW
@@ -20,6 +22,41 @@ window.geometry("900x650")
 window.configure(bg="#dff6f0")
 
 window.resizable(False, False)
+navbar=Frame(window,bg="#002f34",height=60)
+navbar.pack(fill="x")
+home_btn=Label(navbar,text="🏠 Home",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+home_btn.pack(side="left",padx="15")
+sell_btn=Label(navbar,text="➕ Sell",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+sell_btn.pack(side="left",padx="15")
+products_btn=Label(navbar,text="📦 Products",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+products_btn.pack(side="left",padx="15")
+logout_btn=Label(navbar,text="🚪 Logout",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+logout_btn.pack(side="left",padx="15")
+def open_home():
+    main_frame.tkraise()
+def open_sell():
+    if current_user:
+
+        open_add_product(current_user)
+
+    else:
+
+        messagebox.showerror(
+            "Login Required",
+            "Please login first"
+        )  
+def open_products():
+    open_products_window()
+def logout():
+    global current_user
+
+    current_user = None
+
+    messagebox.showinfo(
+        "Logout",
+        "Logged out successfully"
+    )
+
 
 # =========================
 # MAIN FRAME
@@ -97,7 +134,6 @@ def on_leave_red(e):
 # =========================
 # DASHBOARD
 # =========================
-
 def open_dashboard(user):
 
     dashboard = Toplevel(window)
@@ -199,7 +235,30 @@ def open_dashboard(user):
 
     logout_btn.bind("<Enter>", on_enter_red)
     logout_btn.bind("<Leave>", on_leave_red)
-
+    def navbar_home(event):
+        dashboard.lift()
+    def navbar_sell(event):
+        open_add_product(user)
+    def navbar_products(event):
+        open_products_window()
+    def navbar_logout(event):
+         dashboard.destroy()
+    home_btn.bind(
+        "<Button-1>",
+        navbar_home
+    )
+    sell_btn.bind(
+        "<Button-1>",
+        navbar_sell
+    )
+    products_btn.bind(
+        "<Button-1>",
+        navbar_products
+    )
+    logout_btn.bind(
+        "<Button-1>",
+        navbar_logout
+    )
 # =========================
 # ADD PRODUCT WINDOW
 # =========================
@@ -213,7 +272,7 @@ def open_add_product(user):
     add_window.geometry("500x650")
 
     add_window.configure(bg="#dff6f0")
-    add_window.grab_set()  
+    add_window.grab_set()
 
     seller_name = user[1]
 
@@ -280,7 +339,6 @@ def open_add_product(user):
     desc_text.pack(pady=8)
 
     # IMAGE UPLOAD
-# IMAGE UPL    # IMAGE UPLOAD
 
     image_path = StringVar()
 
@@ -300,8 +358,6 @@ def open_add_product(user):
             image_path.set(file)
             image_label.config(text="✅ Image Selected")
 
-    # UPLOAD BUTTON
-
     upload_btn = Label(
         add_window,
         text="📷 Upload Image",
@@ -319,8 +375,6 @@ def open_add_product(user):
         "<Button-1>",
         lambda e: upload_image()
     )
-
-    # IMAGE LABEL
 
     image_label = Label(
         add_window,
@@ -385,6 +439,7 @@ def open_add_product(user):
         "<Button-1>",
         lambda e: save_product()
     )
+
 # =========================
 # VIEW PRODUCTS WINDOW
 # =========================
@@ -392,18 +447,98 @@ def open_add_product(user):
 def open_products_window():
 
     products_window = Toplevel(window)
+
     products_window.title("All Products")
-    products_window.geometry("850x650")
+
+    products_window.geometry("1000x700")
+
     products_window.configure(bg="#dff6f0")
+
+    # =========================
+    # HEADING
+    # =========================
 
     heading = Label(
         products_window,
         text="Available Products",
-        font=("Helvetica", 24, "bold"),
+        font=("Helvetica", 28, "bold"),
         bg="#dff6f0",
         fg="#002f34"
     )
+
     heading.pack(pady=20)
+
+    # =========================
+    # TOP BAR
+    # =========================
+
+    top_frame = Frame(
+        products_window,
+        bg="#dff6f0"
+    )
+
+    top_frame.pack(fill="x", padx=20)
+
+    back_btn = Button(
+        top_frame,
+        text="← Back",
+        bg="#ff4d4d",
+        fg="white",
+        font=("Helvetica", 11, "bold"),
+        relief="flat",
+        cursor="hand2",
+        padx=15,
+        pady=5,
+        command=products_window.destroy
+    )
+
+    back_btn.pack(side=LEFT)
+
+    # =========================
+    # SEARCH BAR
+    # =========================
+
+    search_frame = Frame(
+        products_window,
+        bg="#dff6f0"
+    )
+
+    search_frame.pack(pady=10)
+
+    search_entry = Entry(
+        search_frame,
+        width=40,
+        font=("Helvetica", 13),
+        relief="solid",
+        bd=1
+    )
+
+    search_entry.pack(
+        side=LEFT,
+        ipady=8,
+        padx=10
+    )
+
+    search_btn = Button(
+        search_frame,
+        text="🔍 Search",
+        bg="#2f6df6",
+        fg="white",
+        activebackground="#2457c5",
+        activeforeground="white",
+        font=("Helvetica", 12, "bold"),
+        cursor="hand2",
+        relief="flat",
+        bd=0,
+        padx=20,
+        pady=8
+    )
+
+    search_btn.pack(side=LEFT)
+
+    # =========================
+    # SCROLLABLE AREA
+    # =========================
 
     canvas = Canvas(
         products_window,
@@ -417,115 +552,280 @@ def open_products_window():
         command=canvas.yview
     )
 
-    scrollable_frame = Frame(canvas, bg="#dff6f0")
+    scrollable_frame = Frame(
+        canvas,
+        bg="#dff6f0"
+    )
 
     scrollable_frame.bind(
         "<Configure>",
-        lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
     )
 
-    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
+    canvas.create_window(
+        (0, 0),
+        window=scrollable_frame,
+        anchor="nw"
+    )
 
-    canvas.pack(side="left", fill="both", expand=True)
-    scrollbar.pack(side="right", fill="y")
+    canvas.configure(
+        yscrollcommand=scrollbar.set
+    )
 
-    products = get_products()
+    canvas.pack(
+        side="left",
+        fill="both",
+        expand=True
+    )
 
-    row = 0
-    col = 0
+    scrollbar.pack(
+        side="right",
+        fill="y"
+    )
 
-    for product in products:
+    # =========================
+    # LOAD PRODUCTS
+    # =========================
 
-        title = product[1]
-        price = product[2]
-        description = product[3]
-        seller = product[4]
-        image_path = product[5]   # ✅ IMPORTANT FIX
+    def load_products(search_text=""):
 
-        card = Frame(
-            scrollable_frame,
-            bg="white",
-            width=320,
-            height=300,
-            padx=15,
-            pady=15,
-            highlightbackground="#d9d9d9",
-            highlightthickness=2
-        )
+        for widget in scrollable_frame.winfo_children():
 
-        card.grid(row=row, column=col, padx=20, pady=20)
-        card.grid_propagate(False)
+            widget.destroy()
 
-        # ======================
-        # IMAGE SECTION (FIXED)
-        # ======================
-        try:
-            if image_path:
-                img = Image.open(image_path)
-                img = img.resize((200, 150))
-                img = ImageTk.PhotoImage(img)
+        products = get_products()
 
-                image_label = Label(card, image=img)
-                image_label.image = img
-                image_label.pack(pady=10)
+        row = 0
+        col = 0
 
-            else:
-                raise Exception("No Image")
+        for product in products:
 
-        except:
-            image_label = Label(
-                card,
-                text="No Image Available",
-                bg="#eeeeee",
-                fg="gray",
-                width=25,
-                height=6
+            title = product[1]
+
+            if search_text.lower() not in title.lower():
+
+                continue
+
+            price = product[2]
+
+            description = product[3]
+
+            seller = product[4]
+
+            image_path = product[5]
+
+            # =========================
+            # PRODUCT CARD
+            # =========================
+
+            card = Frame(
+                scrollable_frame,
+                bg="#dff6f0",
+                width=340,
+                height=500,
+                highlightbackground="#dddddd",
+                highlightthickness=1
             )
-            image_label.pack(pady=10)
 
-        # TITLE
-        Label(
-            card,
-            text=title,
-            font=("Helvetica", 16, "bold"),
-            bg="white",
-            fg="#002f34",
-            wraplength=250
-        ).pack()
+            card.grid(
+                row=row,
+                column=col,
+                padx=18,
+                pady=18
+            )
 
-        # PRICE
-        Label(
-            card,
-            text=f"Rs. {price}",
-            font=("Helvetica", 14, "bold"),
-            bg="white",
-            fg="#00a49f"
-        ).pack(pady=5)
+            card.grid_propagate(False)
 
-        # DESCRIPTION
-        Label(
-            card,
-            text=description,
-            font=("Helvetica", 10),
-            bg="white",
-            fg="gray",
-            wraplength=250
-        ).pack()
+            # =========================
+            # IMAGE SECTION
+            # =========================
 
-        # SELLER
-        Label(
-            card,
-            text=f"Seller: {seller}",
-            font=("Helvetica", 10, "italic"),
-            bg="white",
-            fg="gray"
-        ).pack(pady=5)
+            image_frame = Frame(
+                card,
+                bg="#f5f5f5",
+                width=300,
+                height=150
+            )
 
-        col += 1
-        if col == 2:
-            col = 0
-            row += 1
+            image_frame.pack(
+                pady=15
+            )
+
+            image_frame.pack_propagate(False)
+
+            try:
+
+                if image_path:
+
+                    img = Image.open(image_path)
+
+                    img = img.resize((140, 120))
+
+                    img = ImageTk.PhotoImage(img)
+
+                    image_label = Label(
+                        image_frame,
+                        image=img,
+                        bg="#f5f5f5"
+                    )
+
+                    image_label.image = img
+
+                    image_label.pack(expand=True)
+
+                else:
+
+                    raise Exception("No Image")
+
+            except:
+
+                image_label = Label(
+                    image_frame,
+                    text="📷 Product Image",
+                    bg="#f5f5f5",
+                    fg="gray",
+                    font=("Helvetica", 12)
+                )
+
+                image_label.pack(expand=True)
+
+            # TITLE
+
+            Label(
+                card,
+                text=title,
+                font=("Helvetica", 18, "bold"),
+                bg="#dff6f0",
+                fg="#002f34"
+            ).pack(pady=(10, 5))
+
+            # PRICE
+
+            Label(
+                card,
+                text=f"Rs. {price}",
+                font=("Helvetica", 15, "bold"),
+                bg="#dff6f0",
+                fg="#00a49f"
+            ).pack()
+
+            # DESCRIPTION
+
+            Label(
+                card,
+                text=description,
+                font=("Helvetica", 10),
+                bg="#dff6f0",
+                fg="#444444",
+                wraplength=250
+            ).pack(pady=10)
+
+            # SELLER
+
+            Label(
+                card,
+                text=f"Seller: {seller}",
+                font=("Helvetica", 10, "italic"),
+                bg="#dff6f0",
+                fg="gray"
+            ).pack(pady=5)
+
+            # BUY FUNCTION
+
+            def buy_product(product_name=title):
+
+                messagebox.showinfo(
+                    "Purchase",
+                    f"You bought {product_name}"
+                )
+
+            # BUY BUTTON
+
+            buy_btn = Button(
+                card,
+                text="🛍 Buy Now",
+                bg="#e22ff6",
+                fg="white",
+                activebackground="#e22ff6",
+                activeforeground="white",
+                font=("Helvetica", 11, "bold"),
+                cursor="hand2",
+                width=14,
+                height=1,
+                relief="flat",
+                bd=0,
+                padx=8,
+                pady=8
+            )
+
+            buy_btn.pack(pady=10)
+
+            buy_btn.config(command=buy_product)
+
+            # DELETE FUNCTION
+
+            def delete_this_product(card_frame=card):
+
+                confirm = messagebox.askyesno(
+                    "Delete Product",
+                    "Are you sure you want to delete this product?"
+                )
+
+                if confirm:
+
+                    card_frame.destroy()
+
+                    messagebox.showinfo(
+                        "Deleted",
+                        "Product deleted successfully"
+                    )
+
+            # DELETE BUTTON
+
+            delete_btn = Button(
+                card,
+                text="🗑 Delete",
+                bg="#ff4d4d",
+                fg="white",
+                activebackground="#e63939",
+                activeforeground="white",
+                font=("Helvetica", 11, "bold"),
+                cursor="hand2",
+                width=14,
+                height=1,
+                relief="flat",
+                bd=0,
+                padx=8,
+                pady=8,
+                command=delete_this_product
+            )
+
+            delete_btn.pack(pady=(0, 15))
+
+            col += 1
+
+            if col == 2:
+
+                col = 0
+
+                row += 1
+
+    # SEARCH FUNCTION
+
+    def search_products():
+
+        text = search_entry.get()
+
+        load_products(text)
+
+    search_btn.config(
+        command=search_products
+    )
+
+    load_products()
+
 # =========================
 # REGISTER WINDOW
 # =========================
@@ -632,7 +932,7 @@ def open_register():
 # =========================
 
 def open_login():
- 
+
     login_window = Toplevel(window)
 
     login_window.title("Login")
@@ -685,8 +985,9 @@ def open_login():
 
         if user:
 
+            global current_user
+            current_user=user
             login_window.destroy()
-
             open_dashboard(user)
 
         else:

@@ -36,3 +36,18 @@ def get_products():
     conn.close()
 
     return products
+
+def delete_product(product_id):
+
+    conn = connect()
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM products WHERE id=?",
+        (product_id,)
+    )
+
+    conn.commit()
+
+    conn.close()
