@@ -28,7 +28,7 @@ def get_products():
     cursor = conn.cursor()
 
     cursor.execute("""
- SELECT id, title, price, description, seller, image
+ SELECT id, title, price, description, seller, image, status
  FROM products
  """)
     products = cursor.fetchall()
@@ -50,4 +50,16 @@ def delete_product(product_id):
 
     conn.commit()
 
+    conn.close()
+def mark_as_sold(product_id):
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE products
+        SET status = 'sold'
+        WHERE id = ?
+    """, (product_id,))
+
+    conn.commit()
     conn.close()

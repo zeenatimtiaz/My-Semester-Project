@@ -6,7 +6,7 @@ from tkinter import *
 from tkinter import messagebox, filedialog
 from PIL import Image, ImageTk
 from auth import register_user, login_user, delete_user
-from product import add_product, get_products,delete_product
+from product import add_product, get_products,delete_product,mark_as_sold
 import os
 
 current_user = None
@@ -24,16 +24,31 @@ window.configure(bg="#dff6f0")
 window.resizable(False, False)
 navbar=Frame(window,bg="#002f34",height=60)
 navbar.pack(fill="x")
-home_btn=Label(navbar,text="🏠 Home",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+def navbar_enter(e):
+    e.widget.config(bg="#004d52")
+
+def navbar_leave(e):
+    e.widget.config(bg="#002f34")
+home_btn=Label(navbar,text="🏠 Home",bg="#002f34",fg="white",font=("Helvetica",12,"bold"),cursor="hand2")
 home_btn.pack(side="left",padx="15")
-sell_btn=Label(navbar,text="➕ Sell",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+home_btn.bind("<Enter>", navbar_enter)
+home_btn.bind("<Leave>", navbar_leave)
+sell_btn=Label(navbar,text="➕ Sell",bg="#002f34",fg="white",font=("Helvetica",12,"bold"),cursor="hand2")
 sell_btn.pack(side="left",padx="15")
-products_btn=Label(navbar,text="📦 Products",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+products_btn=Label(navbar,text="📦 Products",bg="#002f34",fg="white",font=("Helvetica",12,"bold"),cursor="hand2")
 products_btn.pack(side="left",padx="15")
-logout_btn=Label(navbar,text="🚪 Logout",bg="#002f34",fg="White",font=("Helvetica",12,"bold"),cursor="hand2")
+products_btn.bind("<Enter>", navbar_enter)
+products_btn.bind("<Leave>", navbar_leave)
+logout_btn=Label(navbar,text="🚪 Logout",bg="#002f34",fg="white",font=("Helvetica",12,"bold"),cursor="hand2")
 logout_btn.pack(side="left",padx="15")
+logout_btn.bind("<Enter>", navbar_enter)
+logout_btn.bind("<Leave>", navbar_leave)
 def open_home():
-    main_frame.tkraise()
+    for widget in window.winfo_children():
+        if isinstance(widget, Toplevel):
+            widget.destroy()
+    main_frame.pack(expand=True)
+    
 def open_sell():
     if current_user:
 
@@ -51,6 +66,9 @@ def logout():
     global current_user
 
     current_user = None
+    for widget in window.winfo_children():
+        if isinstance(widget, Toplevel):
+            widget.destroy()
 
     messagebox.showinfo(
         "Logout",
@@ -169,7 +187,7 @@ def open_dashboard(user):
 
     # SELL PRODUCT BUTTON
 
-    sell_btn = Label(
+    dashboard_sell_btn = Label(
         dashboard,
         text="Sell Product",
         bg="#00a49f",
@@ -180,19 +198,19 @@ def open_dashboard(user):
         cursor="hand2"
     )
 
-    sell_btn.pack(pady=15)
+    dashboard_sell_btn.pack(pady=15)
 
-    sell_btn.bind(
+    dashboard_sell_btn.bind(
         "<Button-1>",
         lambda e: open_add_product(user)
     )
 
-    sell_btn.bind("<Enter>", on_enter_green)
-    sell_btn.bind("<Leave>", on_leave_green)
+    dashboard_sell_btn.bind("<Enter>", on_enter_green)
+    dashboard_sell_btn.bind("<Leave>", on_leave_green)
 
     # VIEW PRODUCTS BUTTON
 
-    view_btn = Label(
+    dashboard_view_btn = Label(
         dashboard,
         text=" View Products",
         bg="#3a77ff",
@@ -203,19 +221,19 @@ def open_dashboard(user):
         cursor="hand2"
     )
 
-    view_btn.pack(pady=15)
+    dashboard_view_btn.pack(pady=15)
 
-    view_btn.bind(
+    dashboard_view_btn.bind(
         "<Button-1>",
         lambda e: open_products_window()
     )
 
-    view_btn.bind("<Enter>", on_enter_blue)
-    view_btn.bind("<Leave>", on_leave_blue)
+    dashboard_view_btn.bind("<Enter>", on_enter_blue)
+    dashboard_view_btn.bind("<Leave>", on_leave_blue)
 
     # LOGOUT BUTTON
 
-    logout_btn = Label(
+    dashboard_logout_btn = Label(
         dashboard,
         text="Logout",
         bg="#ff4d4d",
@@ -226,39 +244,16 @@ def open_dashboard(user):
         cursor="hand2"
     )
 
-    logout_btn.pack(pady=30)
+    dashboard_logout_btn.pack(pady=30)
 
-    logout_btn.bind(
+    dashboard_logout_btn.bind(
         "<Button-1>",
         lambda e: dashboard.destroy()
     )
 
-    logout_btn.bind("<Enter>", on_enter_red)
-    logout_btn.bind("<Leave>", on_leave_red)
-    def navbar_home(event):
-        dashboard.lift()
-    def navbar_sell(event):
-        open_add_product(user)
-    def navbar_products(event):
-        open_products_window()
-    def navbar_logout(event):
-         dashboard.destroy()
-    home_btn.bind(
-        "<Button-1>",
-        navbar_home
-    )
-    sell_btn.bind(
-        "<Button-1>",
-        navbar_sell
-    )
-    products_btn.bind(
-        "<Button-1>",
-        navbar_products
-    )
-    logout_btn.bind(
-        "<Button-1>",
-        navbar_logout
-    )
+    dashboard_logout_btn.bind("<Enter>", on_enter_red)
+    dashboard_logout_btn.bind("<Leave>", on_leave_red)
+    
 # =========================
 # ADD PRODUCT WINDOW
 # =========================
@@ -601,6 +596,7 @@ def open_products_window():
         col = 0
 
         for product in products:
+            product_id=product[0]
 
             title = product[1]
 
@@ -615,6 +611,9 @@ def open_products_window():
             seller = product[4]
 
             image_path = product[5]
+            status  = product[6]
+            if status is None:
+                status="available"
 
             # =========================
             # PRODUCT CARD
@@ -731,15 +730,24 @@ def open_products_window():
                 bg="#dff6f0",
                 fg="gray"
             ).pack(pady=5)
+            if status == "sold":
+                Label(card,text="SOLD OUT",bg="gray",fg="white",font=("Helvetica",12,"bold"),width=15).pack(pady=10)
+
+              
 
             # BUY FUNCTION
 
-            def buy_product(product_name=title):
+            def buy_product(product_id,button,product_name=title):
+                confirm=messagebox.askyesno("Confirm Purchase",f"do you want to buy{product_name}?")
+                if confirm:
+                    mark_as_sold(product_id)
+                    button.config(text="✓ SOLD",bg="gray",state=DISABLED)
 
                 messagebox.showinfo(
                     "Purchase",
                     f"You bought {product_name}"
                 )
+
 
             # BUY BUTTON
 
@@ -760,9 +768,10 @@ def open_products_window():
                 pady=8
             )
 
-            buy_btn.pack(pady=10)
+            
 
-            buy_btn.config(command=buy_product)
+            buy_btn.config(command=lambda pid=product_id, btn=buy_btn,name=title:buy_product(pid,btn,name))
+            buy_btn.pack(pady=10)
 
             # DELETE FUNCTION
 
@@ -1166,5 +1175,23 @@ delete_account_btn.bind(
 # =========================
 # RUN APP
 # =========================
+home_btn.bind(
+    "<Button-1>",
+    lambda e: open_home()
+)
 
+sell_btn.bind(
+    "<Button-1>",
+    lambda e: open_sell()
+)
+
+products_btn.bind(
+    "<Button-1>",
+    lambda e: open_products()
+)
+
+logout_btn.bind(
+    "<Button-1>",
+    lambda e: logout()
+)
 window.mainloop()
