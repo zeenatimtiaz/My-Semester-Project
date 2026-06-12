@@ -445,7 +445,9 @@ def open_products_window():
 
     products_window.title("All Products")
 
-    products_window.geometry("1000x700")
+    products_window.geometry("1300x800")
+
+    products_window.minsize(1200,750)
 
     products_window.configure(bg="#dff6f0")
 
@@ -621,18 +623,20 @@ def open_products_window():
 
             card = Frame(
                 scrollable_frame,
-                bg="#dff6f0",
-                width=340,
-                height=500,
-                highlightbackground="#dddddd",
-                highlightthickness=1
+                bg="white",
+                width=350,
+                height=450,
+                highlightbackground="#d9d9d9",
+                highlightthickness=1,
+                bd=0
             )
 
             card.grid(
                 row=row,
                 column=col,
-                padx=18,
-                pady=18
+                padx=25,
+                pady=25,
+                sticky="n"
             )
 
             card.grid_propagate(False)
@@ -644,8 +648,8 @@ def open_products_window():
             image_frame = Frame(
                 card,
                 bg="#f5f5f5",
-                width=300,
-                height=150
+                width=320,
+                height=220
             )
 
             image_frame.pack(
@@ -660,7 +664,7 @@ def open_products_window():
 
                     img = Image.open(image_path)
 
-                    img = img.resize((140, 120))
+                    img = img.resize((320, 220),Image.LANCZOS)
 
                     img = ImageTk.PhotoImage(img)
 
@@ -672,7 +676,7 @@ def open_products_window():
 
                     image_label.image = img
 
-                    image_label.pack(expand=True)
+                    image_label.pack(fill="both",expand=True)
 
                 else:
 
@@ -682,10 +686,11 @@ def open_products_window():
 
                 image_label = Label(
                     image_frame,
-                    text="📷 Product Image",
+                    text="📷\n No Image Availaible",
                     bg="#f5f5f5",
-                    fg="gray",
-                    font=("Helvetica", 12)
+                    fg="#999999",
+                    font=("Helvetica", 13,"bold"),
+                    justify="center"
                 )
 
                 image_label.pack(expand=True)
@@ -695,20 +700,22 @@ def open_products_window():
             Label(
                 card,
                 text=title,
-                font=("Helvetica", 18, "bold"),
-                bg="#dff6f0",
-                fg="#002f34"
-            ).pack(pady=(10, 5))
+                font=("Helvetica", 14, "bold"),
+                bg="white",
+                fg="#002f34",
+                wraplength=300,
+                justify="left"
+            ).pack(anchor="w",padx=15,pady=(10, 5))
 
             # PRICE
 
             Label(
                 card,
                 text=f"Rs. {price}",
-                font=("Helvetica", 15, "bold"),
-                bg="#dff6f0",
+                font=("Helvetica", 20, "bold"),
+                bg="white",
                 fg="#00a49f"
-            ).pack()
+            ).pack(anchor="w",padx=15,pady=(5,0))
 
             # DESCRIPTION
 
@@ -716,20 +723,20 @@ def open_products_window():
                 card,
                 text=description,
                 font=("Helvetica", 10),
-                bg="#dff6f0",
+                bg="white",
                 fg="#444444",
                 wraplength=250
-            ).pack(pady=10)
+            ).pack(anchor="w",padx=15,pady=(5,0))
 
             # SELLER
 
             Label(
                 card,
-                text=f"Seller: {seller}",
+                text=f"👤Seller: {seller}",
                 font=("Helvetica", 10, "italic"),
-                bg="#dff6f0",
-                fg="gray"
-            ).pack(pady=5)
+                bg="white",
+                fg="#7f8c8d"
+            ).pack(anchor="w",padx=15,pady=5)
             if status == "sold":
                 Label(card,text="SOLD OUT",bg="gray",fg="white",font=("Helvetica",12,"bold"),width=15).pack(pady=10)
 
@@ -754,24 +761,23 @@ def open_products_window():
             buy_btn = Button(
                 card,
                 text="🛍 Buy Now",
-                bg="#e22ff6",
-                fg="white",
-                activebackground="#e22ff6",
-                activeforeground="white",
+                bg="#23e5db",
+                fg="#002f34",
+                activebackground="#1ccfc5",
+                activeforeground="#002f34",
                 font=("Helvetica", 11, "bold"),
                 cursor="hand2",
-                width=14,
+                width=12,
                 height=1,
                 relief="flat",
                 bd=0,
-                padx=8,
-                pady=8
+                
             )
 
             
 
             buy_btn.config(command=lambda pid=product_id, btn=buy_btn,name=title:buy_product(pid,btn,name))
-            buy_btn.pack(pady=10)
+            buy_btn.pack(side="left",padx=5)
 
             # DELETE FUNCTION
 
@@ -796,22 +802,21 @@ def open_products_window():
             delete_btn = Button(
                 card,
                 text="🗑 Delete",
-                bg="#ff4d4d",
+                bg="#ff4d4f",
                 fg="white",
-                activebackground="#e63939",
+                activebackground="#e63946",
                 activeforeground="white",
                 font=("Helvetica", 11, "bold"),
                 cursor="hand2",
-                width=14,
+                width=12,
                 height=1,
                 relief="flat",
                 bd=0,
-                padx=8,
-                pady=8,
+                
                 command=delete_this_product
             )
 
-            delete_btn.pack(pady=(0, 15))
+            delete_btn.pack(side="left",padx=5)
 
             col += 1
 
