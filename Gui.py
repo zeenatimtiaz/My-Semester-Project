@@ -16,6 +16,8 @@ current_user = None
 # =========================
 
 window = Tk()
+window.grid_rowconfigure(1, weight=1)
+window.grid_columnconfigure(0, weight=1)
 
 window.title("OLX Desktop Clone")
 window.geometry("900x650")
@@ -23,7 +25,7 @@ window.configure(bg="#dff6f0")
 
 window.resizable(False, False)
 navbar=Frame(window,bg="#002f34",height=60)
-navbar.pack(fill="x")
+navbar.pack(fill="x",side="top")
 def navbar_enter(e):
     e.widget.config(bg="#004d52")
 
@@ -47,7 +49,7 @@ def open_home():
     for widget in window.winfo_children():
         if isinstance(widget, Toplevel):
             widget.destroy()
-    main_frame.pack(expand=True)
+    main_frame.pack(fill="both",expand=True)
     
 def open_sell():
     if current_user:
@@ -624,19 +626,20 @@ def open_products_window():
             card = Frame(
                 scrollable_frame,
                 bg="white",
-                width=350,
-                height=450,
-                highlightbackground="#d9d9d9",
-                highlightthickness=1,
-                bd=0
+                width=300,
+                height=420,
+                
+                highlightthickness=0,
+                bd=0,
+                relief="flat"
             )
 
             card.grid(
                 row=row,
                 column=col,
-                padx=25,
-                pady=25,
-                sticky="n"
+                padx=15,
+                pady=15,
+                
             )
 
             card.grid_propagate(False)
@@ -647,9 +650,9 @@ def open_products_window():
 
             image_frame = Frame(
                 card,
-                bg="#f5f5f5",
-                width=320,
-                height=220
+                bg="#f8f8f8",
+                width=280,
+                height=200
             )
 
             image_frame.pack(
@@ -664,7 +667,7 @@ def open_products_window():
 
                     img = Image.open(image_path)
 
-                    img = img.resize((320, 220),Image.LANCZOS)
+                    img = img.resize((280, 200),Image.LANCZOS)
 
                     img = ImageTk.PhotoImage(img)
 
@@ -712,9 +715,9 @@ def open_products_window():
             Label(
                 card,
                 text=f"Rs. {price}",
-                font=("Helvetica", 20, "bold"),
+                font=("Helvetica", 13, "bold"),
                 bg="white",
-                fg="#00a49f"
+                fg="#002f34"
             ).pack(anchor="w",padx=15,pady=(5,0))
 
             # DESCRIPTION
