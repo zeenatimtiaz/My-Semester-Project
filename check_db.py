@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("olx.db")
+conn = sqlite3.connect("database/olx.db")
 cursor = conn.cursor()
 
 cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
