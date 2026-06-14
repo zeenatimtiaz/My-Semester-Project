@@ -261,6 +261,7 @@ def open_dashboard(user):
 # =========================
 
 def open_add_product(user):
+    
 
     add_window = Toplevel(window)
 
@@ -316,6 +317,19 @@ def open_add_product(user):
     )
 
     price_entry.pack(pady=8)
+
+    #category
+    Label(add_window,
+          text="Category",
+          font=("Helvetica",12,"bold"),
+          bg="#dff6f0").pack()
+    category_var=StringVar()
+    category_var.set("Electronics")
+
+    category_menu=OptionMenu(add_window,category_var,"Electronics","Fashion","Furniture","Automobiles","Books","other")
+    category_menu.config(width=20,font=("helvetica",11))
+    category_menu.pack(pady=8)
+                             
 
     # DESCRIPTION
 
@@ -392,6 +406,7 @@ def open_add_product(user):
         price = price_entry.get()
 
         description = desc_text.get("1.0", END)
+        category=category_var.get()
 
         if title == "" or price == "" or description.strip() == "":
 
@@ -407,7 +422,8 @@ def open_add_product(user):
             price,
             description,
             seller_name,
-            image_path.get()
+            image_path.get(),
+            category
         )
 
         messagebox.showinfo(
@@ -442,6 +458,7 @@ def open_add_product(user):
 # =========================
 
 def open_products_window():
+    selected_category = "ALL"
 
     products_window = Toplevel(window)
 
@@ -503,6 +520,20 @@ def open_products_window():
     )
 
     search_frame.pack(pady=10)
+
+    # CATEGORY FILTER BAR 
+    category_frame=Frame(products_window,bg="#dff6f0")
+    category_frame.pack(pady=10)
+    selected_category = "ALL"
+    categories = ["ALL","Electronics","Fashion","Furniture","Automobiles","Books","Other"]
+    def filter_category(category):
+        nonlocal selected_category
+        selected_category=category
+        load_products(search_entry.get())
+    for category in categories :
+        btn=Button(category_frame,text=category,bg="#002f34",fg="white",font=("Helvetica", 10, "bold"),relief="flat",cursor="hand2",padx=12,pady=5,command=lambda c=category: filter_category(c))
+        btn.pack(side="left",padx=5)
+
 
     search_entry = Entry(
         search_frame,
@@ -595,6 +626,8 @@ def open_products_window():
             widget.destroy()
 
         products = get_products()
+        if selected_category != "ALL":
+            products = [p for p in products if p[7].lower() == selected_category.lower()]
 
         row = 0
         col = 0
@@ -616,6 +649,7 @@ def open_products_window():
 
             image_path = product[5]
             status  = product[6]
+            category=product[7]
             if status is None:
                 status="available"
 
@@ -730,6 +764,8 @@ def open_products_window():
                 fg="#444444",
                 wraplength=250
             ).pack(anchor="w",padx=15,pady=(5,0))
+
+            Label(card,text=f"📂 Category: {category}",font=("Helvetica",10,"bold"),bg="white",fg="#3a77ff").pack(pady=3)
 
             # SELLER
 
