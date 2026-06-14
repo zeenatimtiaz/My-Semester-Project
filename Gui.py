@@ -784,7 +784,12 @@ def open_products_window():
             # BUY FUNCTION
 
             def buy_product(product_id,button,product_name=title):
+                if status == "sold":
+                    messagebox.showinfo("Sold Out", "This product is already sold out")
+                    return
+                
                 confirm=messagebox.askyesno("Confirm Purchase",f"do you want to buy{product_name}?")
+
                 if confirm:
                     mark_as_sold(product_id)
                     button.config(text="✓ SOLD",bg="gray",state=DISABLED)
@@ -813,10 +818,13 @@ def open_products_window():
                 
             )
 
+
             
 
             buy_btn.config(command=lambda pid=product_id, btn=buy_btn,name=title:buy_product(pid,btn,name))
             buy_btn.pack(side="left",padx=5)
+            if status == "sold":
+                buy_btn.config(text="SOLD", state=DISABLED, bg="gray")
 
             # DELETE FUNCTION
 
