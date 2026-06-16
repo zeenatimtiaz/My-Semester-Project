@@ -495,7 +495,7 @@ def open_products_window():
 
     top_frame.pack(fill="x", padx=20)
 
-    back_btn = Button(
+    back_btn = Label(
         top_frame,
         text="← Back",
         bg="#ff4d4d",
@@ -505,10 +505,11 @@ def open_products_window():
         cursor="hand2",
         padx=15,
         pady=5,
-        command=products_window.destroy
+        
     )
 
     back_btn.pack(side=LEFT)
+    back_btn.bind("<Button-1>",lambda e: products_window.destroy())
 
     # =========================
     # SEARCH BAR
@@ -531,8 +532,9 @@ def open_products_window():
         selected_category=category
         load_products(search_entry.get())
     for category in categories :
-        btn=Button(category_frame,text=category,bg="#002f34",fg="white",font=("Helvetica", 10, "bold"),relief="flat",cursor="hand2",padx=12,pady=5,command=lambda c=category: filter_category(c))
+        btn=Label(category_frame,text=category,bg="#002f34",fg="white",font=("Helvetica", 10, "bold"),cursor="hand2",padx=12,pady=5)
         btn.pack(side="left",padx=5)
+        btn.bind("<Button-1>",lambda e,c=category:filter_category(c))
 
 
     search_entry = Entry(
@@ -549,7 +551,7 @@ def open_products_window():
         padx=10
     )
 
-    search_btn = Button(
+    search_btn = Label(
         search_frame,
         text="🔍 Search",
         bg="#2f6df6",
@@ -565,6 +567,7 @@ def open_products_window():
     )
 
     search_btn.pack(side=LEFT)
+    search_btn.bind("<Button-1>",lambda e: search_products())
 
     # =========================
     # SCROLLABLE AREA
@@ -807,8 +810,7 @@ def open_products_window():
                 text="🛍 Buy Now",
                 bg="#23e5db",
                 fg="#002f34",
-                activebackground="#1ccfc5",
-                activeforeground="#002f34",
+                
                 font=("Helvetica", 11, "bold"),
                 cursor="hand2",
                 width=12,
@@ -846,24 +848,23 @@ def open_products_window():
 
             # DELETE BUTTON
 
-            delete_btn = Button(
+            delete_btn = Label(
                 card,
                 text="🗑 Delete",
-                bg="#ff4d4f",
+                bg="#ff4d4d",
                 fg="white",
-                activebackground="#e63946",
-                activeforeground="white",
+                
                 font=("Helvetica", 11, "bold"),
                 cursor="hand2",
                 width=12,
                 height=1,
-                relief="flat",
-                bd=0,
                 
-                command=delete_this_product
+                
+                
             )
 
             delete_btn.pack(side="left",padx=5)
+            delete_btn.bind("<Button-1>",lambda e, card_frame=card: delete_this_product(card_frame))
 
             col += 1
 
@@ -881,9 +882,9 @@ def open_products_window():
 
         load_products(text)
 
-    search_btn.config(
-        command=search_products
-    )
+    
+        
+    
 
     load_products()
 
