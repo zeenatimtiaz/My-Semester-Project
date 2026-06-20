@@ -30,7 +30,8 @@ def create_tables():
             price TEXT,
             description TEXT,
             seller TEXT,
-            image TEXT
+            image TEXT,
+            category TEXT
         )
     """)
 

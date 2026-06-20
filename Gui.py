@@ -805,10 +805,10 @@ def open_products_window():
 
             # BUY BUTTON
 
-            buy_btn = Button(
+            buy_btn = Label(
                 card,
                 text="🛍 Buy Now",
-                bg="#23e5db",
+                bg="#ee9cf2",
                 fg="#002f34",
                 
                 font=("Helvetica", 11, "bold"),
@@ -820,13 +820,18 @@ def open_products_window():
                 
             )
 
-
-            
-
-            buy_btn.config(command=lambda pid=product_id, btn=buy_btn,name=title:buy_product(pid,btn,name))
             buy_btn.pack(side="left",padx=5)
+            buy_btn.bind("<Button-1>",lambda e,product_id=product_id,button=buy_btn: buy_product(product_id,button))
+
             if status == "sold":
-                buy_btn.config(text="SOLD", state=DISABLED, bg="gray")
+                buy_btn.config(
+                    text="✓ SOLD",
+                    bg="gray",
+                    state=DISABLED,
+                    cursor="arrow"
+                    )
+                buy_btn.unbind("<Button-1>")
+                
 
             # DELETE FUNCTION
 
