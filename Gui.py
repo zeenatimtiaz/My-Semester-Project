@@ -786,7 +786,7 @@ def open_products_window():
 
             # BUY FUNCTION
 
-            def buy_product(product_id,button,product_name=title):
+            def buy_product(product_id,button,product_name):
                 if status == "sold":
                     messagebox.showinfo("Sold Out", "This product is already sold out")
                     return
@@ -821,7 +821,14 @@ def open_products_window():
             )
 
             buy_btn.pack(side="left",padx=5)
-            buy_btn.bind("<Button-1>",lambda e,product_id=product_id,button=buy_btn: buy_product(product_id,button))
+            buy_btn.bind(
+                "<Button-1>",
+                lambda e,
+                pid=product_id,
+                btn=buy_btn,
+                pname=title:
+                buy_product(pid, btn, pname)
+                )
 
             if status == "sold":
                 buy_btn.config(
